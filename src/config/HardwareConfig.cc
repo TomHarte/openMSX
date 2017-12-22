@@ -304,6 +304,28 @@ void HardwareConfig::parseSlots()
 	}
 }
 
+void HardwareConfig::parseSlotMap(byte& initialPrimarySlots) const
+{
+	initialPrimarySlots = 0;
+	auto* slotmap = getConfig().findChild("slotmap");
+	if (slotmap) {
+		auto children = slotmap->getChildren("map");
+		for (auto* child : children) {
+			int page = child->getAttributeAsInt("page", -1);
+			if (page < 0 || page > 3) {
+				throw MSXException("Invalid or missing page in slotmap entry");
+			}
+			int slot = child->getAttributeAsInt("slot", -1);
+			if (slot < 0 || slot > 3) {
+				throw MSXException("Invalid or missing slot in slotmap entry");
+			}
+			unsigned offset = page * 2;
+			initialPrimarySlots &= ~(3 << offset);
+			initialPrimarySlots |= slot << offset;
+		}
+	}
+}
+
 void HardwareConfig::createDevices()
 {
 	createDevices(getDevices(), nullptr, nullptr);

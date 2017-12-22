@@ -3,6 +3,7 @@
 
 #include "XMLElement.hh"
 #include "FileContext.hh"
+#include "openmsx.hh"
 #include "serialize_meta.hh"
 #include "serialize_constr.hh"
 #include "array_ref.hh"
@@ -45,6 +46,7 @@ public:
 	const std::string& getName() const { return name; }
 
 	void parseSlots();
+	void parseSlotMap(byte& initialPrimarySlots) const;
 	void createDevices();
 
 	/** Checks whether this HardwareConfig can be deleted.
