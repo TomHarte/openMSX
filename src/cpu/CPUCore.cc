@@ -471,9 +471,6 @@ template<class T> void CPUCore<T>::lowerIRQ()
 
 template<class T> void CPUCore<T>::raiseNMI()
 {
-	// NMIs are currently disabled, they are anyway not used in MSX and
-	// not having to check for them allows to emulate slightly faster
-	UNREACHABLE;
 	assert(NMIStatus >= 0);
 	if (NMIStatus == 0) {
 		nmiEdge = true;
@@ -2489,8 +2486,7 @@ template<class T> void CPUCore<T>::cpuTracePost_slow()
 
 template<class T> void CPUCore<T>::executeSlow()
 {
-	if (unlikely(false && nmiEdge)) {
-		// Note: NMIs are disabled, see also raiseNMI()
+	if (unlikely(nmiEdge)) {
 		nmiEdge = false;
 		nmi(); // NMI occured
 	} else if (unlikely(IRQStatus && getIFF1() && !prevWasEI())) {
